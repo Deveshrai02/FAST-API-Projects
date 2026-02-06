@@ -49,16 +49,6 @@
         "bmi": 31.22,
         "verdict": "Obese"
     },
-    "P006": {
-        "name": "John Doe",
-        "city": "New York",
-        "age": 30,
-        "gender": "Male",
-        "height": 17.5,
-        "weight": 70.0,
-        "bmi": 0.23,
-        "verdict": "Underweight"
-    },
     "P007": {
         "name": "Hero Heralal",
         "city": "New York",
