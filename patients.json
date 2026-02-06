@@ -58,5 +58,25 @@
         "weight": 70.0,
         "bmi": 0.23,
         "verdict": "Underweight"
+    },
+    "P007": {
+        "name": "Hero Heralal",
+        "city": "New York",
+        "age": 32,
+        "gender": "Male",
+        "height": 47.5,
+        "weight": 170.0,
+        "bmi": 0.08,
+        "verdict": "Underweight"
+    },
+    "P008": {
+        "name": "Doland Trump",
+        "city": "Los Angeles",
+        "age": 30,
+        "gender": "Male",
+        "height": 2.8,
+        "weight": 40.0,
+        "bmi": 5.1,
+        "verdict": "Underweight"
     }
 }

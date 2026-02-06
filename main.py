@@ -2,7 +2,7 @@ from fastapi import FastAPI , Path , HTTPException , Query
 from fastapi.responses import JSONResponse
 import json
 from pydantic import BaseModel , Field , computed_field
-from typing import Annotated , Literal
+from typing import Annotated , Literal, Optional
 
 app = FastAPI()
 
@@ -30,7 +30,14 @@ class Patient(BaseModel):
             return "Overweight"
         else:
             return "Obese"
-
+        
+class PatientUpdate(BaseModel):
+    name: Annotated[Optional[str], Field(None,description="Name of the patient" , example="John Doe")]
+    city:Annotated[Optional[str], Field(None,description="City of the patient" , example="New York")]
+    age: Annotated[Optional[int], Field(None,gt=0,lt=120,description="Age of the patient" , example=30)]
+    gender: Annotated[Optional[Literal["Male", "Female", "Other"]], Field(None,description="Gender of the patient" , example="Male")]
+    height: Annotated[Optional[float], Field(None,gt=0,description="Height of the patient in mtrs" , example=17.5)]
+    weight: Annotated[Optional[float], Field(None,gt=0,description="Weight of the patient in kg" , example=70.0)]
 
 
 def load_data():
@@ -81,3 +88,17 @@ def create_patient(patient: Patient):
     data[patient.id] = patient.model_dump(exclude=['id'])
     save_data(data)
     return JSONResponse(status_code=201, content={"message": "Patient created successfully"})
+
+@app.put("/edit/{patient_id}")
+def update_patient(patient_id: str, patient_update: PatientUpdate):
+    data = load_data()
+    if patient_id not in data:
+        raise HTTPException(status_code=404, detail="Patient not found")
+    updated_patient = data[patient_id].copy()
+    for key, value in patient_update.model_dump(exclude_unset=True).items():
+        updated_patient[key] = value
+    updated_patient["bmi"] = round(updated_patient["weight"] / (updated_patient["height"] ** 2), 2) if updated_patient["height"] > 0 else 0
+    updated_patient["verdict"] = "Underweight" if updated_patient["bmi"] < 18.5 else "Normal weight" if updated_patient["bmi"] < 25 else "Overweight" if updated_patient["bmi"] < 30 else "Obese"
+    data[patient_id] = updated_patient
+    save_data(data)
+    return JSONResponse(status_code=200, content={"message": "Patient updated successfully"})
